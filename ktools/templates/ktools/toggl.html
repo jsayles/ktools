@@ -1,0 +1,13 @@
+{% extends "ktools/base.html" %}
+{% load static  %}
+
+{% block content %}
+  <h2>Toggl Clients</h2>
+  <ul>
+    {% for client in toggl_clients %}
+      <li>
+        <a href="{% url 'toggl_client' client.id %}">{{ client.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

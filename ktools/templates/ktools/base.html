@@ -1,0 +1,31 @@
+{% load static  %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Kanawha Design Studio - Internal Tools</title>
+  </head>
+
+  <body>
+    <div id="header">
+      <h1>Kanawha Design Studio - Internal Tools</h1>
+      <nav>
+        [ <a href="{% url 'toggl' %}">Toggl Clients</a> ]
+      </nav>
+      <hr/>
+    </div>
+
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+
+    <div id="footer">
+      <hr/>
+      <div id="copyright">
+        © 2019 Jacob Sayles | <a href="https://kanawha.design" target="_new">Kanawha Design Studio</a>
+      </div>
+    </div>
+  </body>
+</html>
