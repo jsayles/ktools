@@ -13,7 +13,7 @@ SECRET_KEY = 'PRIVATE'
 
 # Application definition
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -54,12 +54,12 @@ WSGI_APPLICATION = 'ktools.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -78,20 +78,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
+STATIC_URL = '/static/'
 
 # Toggl Integration
 # Get your key at: https://www.toggl.com/app/profile
@@ -99,15 +96,9 @@ TOGGL_API_KEY = "YOUR TOGGLE API KEY"
 TOGGL_ACCOUNT = 'YOUR TOGGL ACCOUNT EMAIL'
 TOGGL_PASSWORD = 'YOUR TOGGL PASSWORD'
 
-
 # Xero Integration
 XERO_CONSUMER_KEY = "OCIJ5TBTYHRWFLI9FQLTVFQNE6YE3Q"
 XERO_PRIVATE_KEY="/Users/jacob/Code/visidata/xero/rsa/privatekey.pem"
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATIC_URL = '/static/'
 
 # Load the local settings file
 if os.path.isfile('ktools/local_settings.py'):

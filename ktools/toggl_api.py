@@ -3,7 +3,9 @@ from operator import itemgetter
 from django.conf import settings
 from django.utils import timezone
 
-from toggl.TogglPy import Toggl
+from toggl.TogglPy import Toggl, Endpoints
+
+from ktools.models import TogglClient, TogglProject, TogglEntry
 
 
 class TogglAPI:
@@ -20,11 +22,27 @@ class TogglAPI:
         self.toggl = Toggl()
         self.toggl.setAuthCredentials(self.toggl_account, self.toggl_password)
 
+    def syncClients(self):
+        for c in self.toggl.getClients():
+            client, created = TogglClient.objects.get_or_create(id=c['id'], name=c['name'])
+            projects = self.toggl.getClientProjects(c['id'])
+            if projects:
+                for p in projects:
+                    project, created = TogglProject.objects.get_or_create(id=p['id'], client=client)
+                    if created:
+                        project.name = p['name']
+                        project.is_active = p['active']
+                        project.save()
 
-    def getClients(self):
-        clients = self.toggl.getClients()
-        # return sorted(clients, key=itemgetter('at'), reverse=True)
-        return clients
-
-    def getClient(self, client_id):
-        clients = self.toggl.getClient(id=client_id)
+    def getTimeEntries(self):
+        for e in self.toggl.request(Endpoints.TIME_ENTRIES):
+            print(e)
+            project = TogglProject.objects.filter(id=e['pid']).first()
+            entry, created = TogglEntry.objects.get_or_create(id=e['id'], project=project, uid=e['uid'])
+            if created:
+                entry.start_ts = e['start']
+                entry.end_ts = e['stop']
+                entry.duration_sec = e['duration']
+                if 'description' in e:
+                    entry.description = e['description']
+                entry.save()
