@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from toggl.TogglPy import Toggl
 
@@ -36,13 +37,14 @@ def index(request):
 # Toggl Views
 ######################################################################
 
-
+@login_required
 def toggl(request):
     toggl_clients = get_toggl_api().getClients()
     context = {'toggl_clients': toggl_clients}
     return render(request, 'ktools/toggl.html', context)
 
 
+@login_required
 def toggl_client(request, client_id):
     api = get_toggl_api()
     client = api.getClient(id=client_id)
