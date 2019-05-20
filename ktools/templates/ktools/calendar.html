@@ -1,0 +1,35 @@
+{% extends "ktools/base.html" %}
+{% load static  %}
+
+{% block content %}
+  <center>
+    <h2>
+      <a href="{% url 'calendar' prev_year prev_month %}">&laquo;</a>
+  	  {{ month_name}} {{ year }}
+  	  <a href="{% url 'calendar' next_year next_month %}">&raquo;</a>
+    </h2>
+
+    <table border="1" cellpadding="50" cellspacing="5" class="month">
+      <tr class="calendar_header" style="cellpadding:1px;">
+        <th class="mon">Mon</th>
+        <th class="tue">Tue</th>
+        <th class="wed">Wed</th>
+        <th class="thu">Thu</th>
+        <th class="fri">Fri</th>
+        <th class="sat">Sat</th>
+        <th class="sun">Sun</th>
+      </tr>
+      {% for week in calendar %}
+        <tr>
+          {% for day in week %}
+            {% if day == 0 %}
+              <td class="noday">&nbsp;</td>
+            {% else %}
+              <td>{{ day }}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  </center>
+{% endblock %}

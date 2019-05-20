@@ -7,7 +7,7 @@
   <ul>
     {% for project in projects %}
       <li>
-        {{ project }}
+        <strong>{{ project.name }}:</strong> {{ project.getDurationStr }}
       </li>
     {% endfor %}
   </ul>
