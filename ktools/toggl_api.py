@@ -1,9 +1,9 @@
 import time
-from import datetime import datetime, timedelta
+from datetime import datetime, timedelta
 from operator import itemgetter
 
 from django.conf import settings
-from django.utils import timezone
+from django.utils.timezone import localtime, now, make_aware
 
 from toggl.TogglPy import Toggl, Endpoints
 
@@ -47,17 +47,21 @@ class TogglAPI:
             # Don't hit the API too hard
             time.sleep(1)
 
-    def syncTimeEntries(self, start, end, syncClients=True):
+    def syncTimeEntries(self, start, end):
         for u in self.users:
             toggl = u['api']
 
             # Pull all the time entries for this user
             params = {'start_date':start.isoformat(), 'end_date':end.isoformat()}
-            entries = toggl.request(Endpoints.TIME_ENTRIES, parameters=params):
+            entries = toggl.request(Endpoints.TIME_ENTRIES, parameters=params)
 
             for e in entries:
                 if not 'stop' in e:
                     # Skip entries currently in progress
+                    continue
+                if not 'pid' in e:
+                    print("Found entry without a project.  Ignoring!:")
+                    print(e)
                     continue
                 project = TogglProject.objects.filter(id=e['pid']).first()
                 if not project:
@@ -77,11 +81,23 @@ class TogglAPI:
             # Don't hit the API too hard
             time.sleep(1)
 
-    def syncDailyEntries(self, year, month, day):
-        start = datetime.datetime(year, month, day)
-        start = make_aware(start)
-        end = start + datetime.timedelta(days=1)
+    def syncMonthlyEntries(self, year, month):
+        next_month = month + 1
+        next_year = year
+        if next_month > 12:
+            next_month = 1
+            next_year += 1
+        start = make_aware(datetime(year, month, 1))
+        end = make_aware(datetime(next_year, next_month, 1))
         self.syncTimeEntries(start, end)
 
-        # datetime.datetime(1976, 5, 3, 0, 0)
-        # start.replace(hour=0, minute=0, second=0, microsecond=0)
+    def syncWeeklyEntries(self, year, month, day):
+        start = make_aware(datetime(year, month, day))
+        end = start + timedelta(days=1)
+        start = start - timedelta(days=7)
+        self.syncTimeEntries(start, end)
+
+    def syncDailyEntries(self, year, month, day):
+        start = make_aware(datetime(year, month, day))
+        end = start + timedelta(days=1)
+        self.syncTimeEntries(start, end)
